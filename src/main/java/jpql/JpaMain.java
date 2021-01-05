@@ -1,6 +1,9 @@
 package jpql;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import java.util.List;
 
 /**
@@ -21,18 +24,21 @@ public class JpaMain {
       team.setName("teamA");
       em.persist(team);
 
-      Member member = new Member();
-      member.setUsername("관리자");
-      member.setAge(10);
+      Member member1 = new Member();
+      member1.setUsername("관리자");
+      member1.setAge(10);
+      em.persist(member1);
 
-      member.setTeam(team);
-
-      em.persist(member);
+      Member member2 = new Member();
+      member2.setUsername("관리자");
+      member2.setAge(10);
+      em.persist(member2);
 
       em.flush();
       em.clear();
 
-      String query = "select nullif(m.username, '관리자') from Member m";
+      String query = "select group_concat(m.username) From Member m";
+
       List<String> result = em.createQuery(query, String.class).getResultList();
 
       for (String s : result) {
