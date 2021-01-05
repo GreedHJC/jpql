@@ -8,7 +8,6 @@ import java.util.List;
  *
  * @author : jcHwang
  */
-// 10. 객체지향 쿼리 언어
 public class JpaMain {
   public static void main(String[] args) {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
@@ -23,7 +22,7 @@ public class JpaMain {
       em.persist(team);
 
       Member member = new Member();
-      member.setUsername("teamA");
+      member.setUsername("관리자");
       member.setAge(10);
 
       member.setTeam(team);
@@ -33,11 +32,13 @@ public class JpaMain {
       em.flush();
       em.clear();
 
-      String query = "select (select avg(m1.age) From Member m1) as avgAge from Member m join Team t on m.username = t.name";
-      List<Member> result = em.createQuery(query, Member.class)
-          .getResultList();
+      String query = "select nullif(m.username, '관리자') from Member m";
+      List<String> result = em.createQuery(query, String.class).getResultList();
 
-      System.out.println("result = " + result.size());
+      for (String s : result) {
+        System.out.println("s = " + s);
+      }
+
 
       tx.commit();
     } catch (Exception e) {
